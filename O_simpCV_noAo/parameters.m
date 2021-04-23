@@ -120,11 +120,11 @@ P_pvm   = k_pvm * DPbar;
 
 E_laM = P_laM / V_la0; 
 E_lam = P_lam / V_la0; 
-E_lvM = P_lvM / (.25 * V_lv0); % Assume maximal elastance occurs at 60% stressed volume 
+E_lvM = P_lvM / (.25 * V_lv0); % Assume maximal elastance occurs at 25% stressed volume 
 E_lvm = P_lvm / V_lv0; 
 E_raM = P_raM / V_ra0;
 E_ram = P_ram / V_ra0; 
-E_rvM = P_rvM / (.25 * V_rv0); % Assume maximal elastance occurs at 60% stressed volume 
+E_rvM = P_rvM / (.25 * V_rv0); % Assume maximal elastance occurs at 25% stressed volume 
 E_rvm = P_rvm / V_rv0;  
 
 C_sa = V_sas/P_saM / 1.25; 
