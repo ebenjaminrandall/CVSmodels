@@ -54,6 +54,7 @@ k_pas = pars(32);
 v_max   = pars(33); % m s^(-1) sarcomere length shortening velocity
 Ca_rest = pars(34); % dimensionless Diastolic resting level of activation
 
+tau_a = pars(39); 
 
 
 %% Variables 
@@ -175,7 +176,7 @@ T_rv  = tausc * (0.29 + 0.3 * (Lsc_rv  / 1e-6));
 %% Lumped circulatory model 
 
 % Rise of mechanical activation 
-tc_a    = mod(t + 0.2, T); 
+tc_a    = mod(t + tau_a, T); 
 x_a     = min(8, max(0, tc_a / tauR)); 
 Y_a = 0.02 * x_a^3 * (8 - x_a)^2 * exp(-x_a);
 

@@ -19,8 +19,8 @@ ym0    = data.deformation.ym0;
 
 d_la = 0.005; 
 d_lv = 0.02;
-d_sa = .15; 
-d_sv = 0.59;
+d_sa = .12; 
+d_sv = 0.62;
 d_ra = 0.005;
 d_rv = 0.02; 
 d_pa = 0.06;
@@ -37,11 +37,11 @@ V_pv0 = d_pv*Vtot;
 
 %% Unstressed Volumes (m^3)
 
-vaperc = .7; %Vu for arteries is ~72% of Vtot - Beneken
+vaperc = .72; %Vu for arteries is ~72% of Vtot - Beneken
 V_sau = V_sa0*vaperc;
 V_pau = V_pa0*vaperc; 
 
-vvperc = .9; %Vu for veins is ~92% of Vtot - Beneken
+vvperc = .92; %Vu for veins is ~92% of Vtot - Beneken
 V_svu = V_sv0*vvperc; 
 V_pvu = V_pv0*vvperc; 
 
@@ -190,7 +190,11 @@ Gamma_lv_d     = - (2 / 3) * z_lv_d * (1 + (1 / 3) * z_lv_d^2 + (1 / 5) * z_lv_d
 
 % Force scaling factors (kPa)
 k_pas = P_lvm / (Gamma_lv_d * sigma_pas_lv_d);
-k_act = 120 * 2; 
+k_act = 120; 
+
+%% Atrial offset 
+
+tau_a = 0.2; 
 
 %% Outputs
 
@@ -206,7 +210,7 @@ adjpars = [E_laM; E_lam; E_lvm; E_raM; E_ram; E_rvm;
     v_max; 
     Ca_rest; 
     V_sau; V_svu; V_pau; V_pvu; 
-    
+    tau_a; 
     ]; 
 
 fixpars = [k_lam; k_lvm; k_sa; k_sv; k_ram; k_rvm; k_pa; k_pv; 

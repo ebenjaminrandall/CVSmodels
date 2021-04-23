@@ -15,7 +15,7 @@ SPbar = SPbar / 7.5; % convert from mmHg to kPa
 DPbar = DPbar / 7.5; % convert from mmHg to kPa 
 Pbar  = Pbar  / 7.5; % convert from mmHg to kPa 
 
-HR    = 60;  % convert from beats per min to beats per sec 
+HR    = 75;  % convert from beats per min to beats per sec 
 
 % Total blodo volume % convert from mL to m^3
 Vtot = 4500 * 1e-6; 
@@ -24,7 +24,7 @@ Vtot = 4500 * 1e-6;
 CO = Vtot / 60;     % m^3 s^(-1)
 
 % Individual wall volumes % convert from mL to m^3
-Vw_LV_and_SEP = 100 * 1e-6; %115 * 1e-6; 
+Vw_LV_and_SEP = 115 * 1e-6;
 Vw_RV         = 15 * 1e-6;  %30  * 1e-6;  
 
 % Individual reference surface area % convert from cm^2 to m^2
