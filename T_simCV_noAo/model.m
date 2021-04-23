@@ -1,4 +1,4 @@
-function dxdt = model(t,x,pars,data) 
+function [dxdt, outputs] = model(t,x,pars,data) 
 
 HR = data.HR; 
 
@@ -172,12 +172,12 @@ P_pa = (V_pa - V_pau) / C_pa;
 P_pv = (V_pv - V_pvu) / C_pv; 
 
 % Flow (m^3 s^1) 
-Q_mv = max((P_pv - P_lv) / R_pv, 0); 
-Q_av = max((P_lv - P_sa) / R_v, 0); 
-Q_sa = (P_sa - P_sv) / R_sa; 
-Q_tv = max((P_sv - P_rv) / R_sv, 0); 
-Q_pv = max((P_rv - P_pa) / R_v, 0); 
-Q_pa = (P_pa - P_pv) / R_pa; 
+Q_m_valve = max((P_pv - P_lv) / R_pv, 0); 
+Q_a_valve = max((P_lv - P_sa) / R_v, 0); 
+Q_sa      = (P_sa - P_sv) / R_sa; 
+Q_t_valve = max((P_sv - P_rv) / R_sv, 0); 
+Q_p_valve = max((P_rv - P_pa) / R_v, 0); 
+Q_pa      = (P_pa - P_pv) / R_pa; 
 
 %% ODEs
 
@@ -193,12 +193,12 @@ dLsc_sep = ((Ls_sep - Lsc_sep) /Lse_iso - 1) * v_max;
 dLsc_rv  = ((Ls_rv  - Lsc_rv)  /Lse_iso - 1) * v_max;
 
 % 8 - 14
-dV_lv = Q_mv - Q_av; 
-dV_sa = Q_av - Q_sa; 
-dV_sv = Q_sa - Q_tv; 
-dV_rv = Q_tv - Q_pv; 
-dV_pa = Q_pv - Q_pa; 
-dV_pv = Q_pa - Q_mv; 
+dV_lv = Q_m_valve - Q_a_valve; 
+dV_sa = Q_a_valve - Q_sa; 
+dV_sv = Q_sa      - Q_t_valve; 
+dV_rv = Q_t_valve - Q_p_valve; 
+dV_pa = Q_p_valve - Q_pa; 
+dV_pv = Q_pa      - Q_m_valve; 
 
 % 15 - 17
 dCa_lv  = 1/tauR * CaL_lv  * Frise + 1/tauD * (Ca_rest - Ca_lv)  / (1 + exp((T_lv  - tc) / tauD)); 
@@ -211,6 +211,16 @@ dxdt = [dxm_lv; dxm_sep; dxm_rv; dym;
     dCa_lv; dCa_sep; dCa_rv; 
     ]; 
 
-
+outputs = [P_lv; P_sa; P_sv; P_rv; P_pa; P_pv; 
+    Vm_lv; Vm_sep; Vm_rv; 
+    Am_lv; Am_sep; Am_rv; 
+    Cm_lv; Cm_sep; Cm_rv; 
+    eps_lv; eps_sep; eps_rv; 
+    sigma_pas_lv; sigma_pas_sep; sigma_pas_rv; 
+    sigma_act_lv; sigma_act_sep; sigma_act_rv; 
+    sigma_lv; sigma_sep; sigma_rv; 
+    Q_m_valve; Q_a_valve; Q_t_valve; Q_p_valve; 
+    Q_sa; Q_pa;  
+    ];
 
 end 
