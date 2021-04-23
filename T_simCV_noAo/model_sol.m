@@ -8,36 +8,36 @@ ODE_TOL = data.gpars.ODE_TOL;
 %% Parameters 
 
 % Compliances (m^3 kPa^(-1))
-C_ao = adjpars(3); 
-C_sa = adjpars(4); 
-C_sv = adjpars(5); 
-C_pa = adjpars(6); 
-C_pv = adjpars(7); 
+%C_ao = adjpars(3); 
+C_sa = adjpars(3); 
+C_sv = adjpars(4); 
+C_pa = adjpars(5); 
+C_pv = adjpars(6); 
 
 % Wall volume of ventricular wall segment (m^3)
-Vw_lv  = adjpars(14); 
-Vw_sep = adjpars(15); 
-Vw_rv  = adjpars(16); 
+Vw_lv  = adjpars(12); 
+Vw_sep = adjpars(13); 
+Vw_rv  = adjpars(14); 
 
 % Reference midwall surface area (m^2)
-Amref_lv  = adjpars(17); 
-Amref_sep = adjpars(18); 
-Amref_rv  = adjpars(19); 
+Amref_lv  = adjpars(15); 
+Amref_sep = adjpars(16); 
+Amref_rv  = adjpars(17); 
 
 % Sarcomere length parameters (m)
-Lsref   = adjpars(23);
-Lsc0    = adjpars(24); 
-Lse_iso = adjpars(25); 
+Lsref   = adjpars(21);
+Lsc0    = adjpars(22); 
+Lse_iso = adjpars(23); 
 
 % Force scaling factors (kPa)
-k_act = adjpars(26); 
-k_pas = adjpars(27); 
+k_act = adjpars(24); 
+k_pas = adjpars(25); 
 
-V_aou = adjpars(30); 
-V_sau = adjpars(31);
-V_svu = adjpars(32); 
-V_pau = adjpars(33); 
-V_pvu = adjpars(34); 
+%V_aou = adjpars(30); 
+V_sau = adjpars(28);
+V_svu = adjpars(29); 
+V_pau = adjpars(30); 
+V_pvu = adjpars(31); 
 
 %% Get initial conditions
 
@@ -56,12 +56,12 @@ sol  = ode15s(@model,[tspan(1) tspan(end)],init,opts,adjpars,data);
 sols = deval(sol,tspan);
 
 V_lv = sols(5,:); 
-V_ao = sols(6,:); 
-V_sa = sols(7,:);
-V_sv = sols(8,:); 
-V_rv = sols(9,:);
-V_pa = sols(10,:); 
-V_pv = sols(11,:); 
+%V_ao = sols(6,:); 
+V_sa = sols(6,:);
+V_sv = sols(7,:); 
+V_rv = sols(8,:);
+V_pa = sols(9,:); 
+V_pv = sols(10,:); 
 
 % Axial distance
 xm_lv  = sols(1,:); 
@@ -72,14 +72,14 @@ xm_rv  = sols(3,:);
 ym = sols(4,:); 
 
 % Contractile element length 
-Lsc_lv  = sols(12,:);
-Lsc_sep = sols(13,:); 
-Lsc_rv  = sols(14,:); 
+Lsc_lv  = sols(11,:);
+Lsc_sep = sols(12,:); 
+Lsc_rv  = sols(13,:); 
 
 % Mechanical activation 
-Ca_lv  = sols(15,:);
-Ca_sep = sols(16,:); 
-Ca_rv  = sols(17,:); 
+Ca_lv  = sols(14,:);
+Ca_sep = sols(15,:); 
+Ca_rv  = sols(16,:); 
 
 %% Calculate pressures
 
@@ -129,7 +129,7 @@ ptrans_lv = 2 * Tx_lv ./ ym;
 ptrans_rv = 2 * Tx_rv ./ ym;
 
 P_lv = -ptrans_lv;
-P_ao = (V_ao - V_aou) ./ C_ao; 
+%P_ao = (V_ao - V_aou) ./ C_ao; 
 P_sa = (V_sa - V_sau) ./ C_sa; 
 P_sv = (V_sv - V_svu) ./ C_sv; 
 P_rv = ptrans_rv;
@@ -140,7 +140,7 @@ P_pv = (V_pv - V_pvu) ./ C_pv;
 
 % Convert to m^3 to mL
 volumes.V_lv = V_lv * 1e6; 
-volumes.V_ao = V_ao * 1e6; 
+%volumes.V_ao = V_ao * 1e6; 
 volumes.V_sa = V_sa * 1e6; 
 volumes.V_sv = V_sv * 1e6; 
 volumes.V_rv = V_rv * 1e6; 
@@ -149,7 +149,7 @@ volumes.V_pv = V_pv * 1e6;
 
 % Convert kPa to mmHg
 pressures.P_lv = P_lv * 7.5; 
-pressures.P_ao = P_ao * 7.5; 
+%pressures.P_ao = P_ao * 7.5; 
 pressures.P_sa = P_sa * 7.5; 
 pressures.P_sv = P_sv * 7.5; 
 pressures.P_rv = P_rv * 7.5; 

@@ -31,13 +31,13 @@ Am_RV         = 100 * 1e-4;
 
 % Evaluation time 
 dt = 0.001; 
-tspan = 0:dt:60;
+tspan = 0:dt:20;
 
 % Deformation of heart wall (convert cm to m)
-xm_lv0  = 4 * 1e-2; 
-xm_sep0 = 2 * 1e-2; 
-xm_rv0  = 5 * 1e-2; 
-ym0     = 4 * 1e-2; 
+xm_lv0  = 4.5 * 1e-2; 
+xm_sep0 = 2   * 1e-2; 
+xm_rv0  = 5.5 * 1e-2; 
+ym0     = 3.3 * 1e-2; 
 
 deformation.xm_lv0  = xm_lv0; 
 deformation.xm_sep0 = xm_sep0; 
@@ -73,12 +73,10 @@ data.fixpars      = fixpars;
 outputs = model_sol(adjpars,data); 
 
 V_lv = outputs.volumes.V_lv; 
-V_ao = outputs.volumes.V_ao; 
 V_sa = outputs.volumes.V_sa; 
 V_rv = outputs.volumes.V_rv; 
 
 P_lv = outputs.pressures.P_lv; 
-P_ao = outputs.pressures.P_ao; 
 P_sa = outputs.pressures.P_sa; 
 P_rv = outputs.pressures.P_rv; 
 
@@ -106,10 +104,10 @@ set(gca,'FontSize',20)
 
 figure(3)
 clf
-plot(tspan,P_lv,'b',tspan,P_ao,'c',tspan,P_sa, 'm')
+plot(tspan,P_lv,'b',tspan,P_sa, 'm')
 xlabel('Time (s)')
 ylabel('Pressure (mmHg)')
-legend('P_{lv}','P_{ao}','P_{sa}')
+legend('P_{lv}','P_{sa}')
 set(gca,'FontSize',20)
 
 figure(4)

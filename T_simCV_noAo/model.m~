@@ -49,8 +49,8 @@ Ca_rest = pars(27); % dimensionless Diastolic resting level of activation
 %V_aou = pars(30); 
 V_sau = pars(28);
 V_svu = pars(29); 
-V_pau = pars(30); 
-V_pvu = pars(31); 
+V_pau = pars(33); 
+V_pvu = pars(34); 
 
 %% Variables 
 
