@@ -166,10 +166,10 @@ T_rv  = tausc * (0.29 + 0.3 * (Lsc_rv  / 1e-6));
 %% Lumped circulatory model 
 
 % Pressure (kPa)
-P_sa = (V_sa - V_sau) / C_sa; 
-P_sv = (V_sv - V_svu) / C_sv; 
-P_pa = (V_pa - V_pau) / C_pa; 
-P_pv = (V_pv - V_pvu) / C_pv; 
+P_sa = V_sa / C_sa; 
+P_sv = V_sv / C_sv; 
+P_pa = V_pa / C_pa; 
+P_pv = V_pv / C_pv; 
 
 % Flow (m^3 s^1) 
 Q_m_valve = max((P_pv - P_lv) / R_pv, 0); 

@@ -56,11 +56,11 @@ Lsc_rv0  = 2 * 1e-6;
 
 % 8 - 14 (m^3)
 V_lv0 = P_lvm / E_lvm;
-V_sa0 = C_sa * P_sa + V_sau;  
-V_sv0 = C_sv * P_sv + V_svu;  
+V_sa0 = C_sa * P_sa;  
+V_sv0 = C_sv * P_sv;  
 V_rv0 = P_rvm / E_rvm; 
-V_pa0 = C_pa * P_pa + V_pau;  
-V_pv0 = C_pv * P_pv + V_pvu;  
+V_pa0 = C_pa * P_pa;  
+V_pv0 = C_pv * P_pv;   
 
 % 15 - 17
 Ca_lv0  = Ca_rest;
