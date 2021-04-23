@@ -8,7 +8,6 @@ ODE_TOL = data.gpars.ODE_TOL;
 %% Parameters 
 
 % Compliances (m^3 kPa^(-1))
-%C_ao = adjpars(3); 
 C_sa = adjpars(3); 
 C_sv = adjpars(4); 
 C_pa = adjpars(5); 
@@ -33,7 +32,6 @@ Lse_iso = adjpars(23);
 k_act = adjpars(24); 
 k_pas = adjpars(25); 
 
-%V_aou = adjpars(30); 
 V_sau = adjpars(28);
 V_svu = adjpars(29); 
 V_pau = adjpars(30); 
@@ -55,14 +53,6 @@ opts = odeset('Mass',M,'RelTol',ODE_TOL,'AbsTol',ODE_TOL);
 sol  = ode15s(@model,[tspan(1) tspan(end)],init,opts,adjpars,data);
 sols = deval(sol,tspan);
 
-V_lv = sols(5,:); 
-%V_ao = sols(6,:); 
-V_sa = sols(6,:);
-V_sv = sols(7,:); 
-V_rv = sols(8,:);
-V_pa = sols(9,:); 
-V_pv = sols(10,:); 
-
 % Axial distance
 xm_lv  = sols(1,:); 
 xm_sep = sols(2,:); 
@@ -72,9 +62,17 @@ xm_rv  = sols(3,:);
 ym = sols(4,:); 
 
 % Contractile element length 
-Lsc_lv  = sols(11,:);
-Lsc_sep = sols(12,:); 
-Lsc_rv  = sols(13,:); 
+Lsc_lv  = sols(5,:);
+Lsc_sep = sols(6,:); 
+Lsc_rv  = sols(7,:); 
+
+% Volume 
+V_lv = sols(8,:); 
+V_sa = sols(9,:);
+V_sv = sols(10,:); 
+V_rv = sols(11,:);
+V_pa = sols(12,:); 
+V_pv = sols(13,:); 
 
 % Mechanical activation 
 Ca_lv  = sols(14,:);

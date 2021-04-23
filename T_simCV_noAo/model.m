@@ -5,14 +5,12 @@ HR = data.HR;
 %% Parameters
 
 % Compliance (mL mmHg^(-1))
-%C_ao = pars(3); 
 C_sa = pars(3); 
 C_sv = pars(4); 
 C_pa = pars(5); 
 C_pv = pars(6); 
 
 % Resistance (mmHg s mL^(-1))
-%R_ao = pars(8); 
 R_sa = pars(7); 
 R_sv = pars(8); 
 R_pa = pars(9); 
@@ -46,7 +44,6 @@ k_pas = pars(25);
 v_max   = pars(26); % m s^(-1) sarcomere length shortening velocity
 Ca_rest = pars(27); % dimensionless Diastolic resting level of activation
 
-%V_aou = pars(30); 
 V_sau = pars(28);
 V_svu = pars(29); 
 V_pau = pars(30); 
@@ -62,19 +59,18 @@ xm_rv  = x(3);
 % Radial distance of midwall junction 
 ym = x(4); 
 
-% Volumes 
-V_lv = x(5); 
-%V_ao = x(6); 
-V_sa = x(6); 
-V_sv = x(7); 
-V_rv = x(8);
-V_pa = x(9); 
-V_pv = x(10); 
-
 % Contractile element length 
-Lsc_lv  = x(11); 
-Lsc_sep = x(12); 
-Lsc_rv  = x(13); 
+Lsc_lv  = x(5); 
+Lsc_sep = x(6); 
+Lsc_rv  = x(7); 
+
+% Volumes 
+V_lv = x(8); 
+V_sa = x(9); 
+V_sv = x(10); 
+V_rv = x(11);
+V_pa = x(12); 
+V_pv = x(13); 
 
 % Mechanical activation 
 Ca_lv  = x(14); 
@@ -170,7 +166,6 @@ T_rv  = tausc * (0.29 + 0.3 * (Lsc_rv  / 1e-6));
 %% Lumped circulatory model 
 
 % Pressure (kPa)
-%P_ao = (V_ao - V_aou) / C_ao; 
 P_sa = (V_sa - V_sau) / C_sa; 
 P_sv = (V_sv - V_svu) / C_sv; 
 P_pa = (V_pa - V_pau) / C_pa; 
@@ -179,7 +174,6 @@ P_pv = (V_pv - V_pvu) / C_pv;
 % Flow (m^3 s^1) 
 Q_mv = max((P_pv - P_lv) / R_pv, 0); 
 Q_av = max((P_lv - P_sa) / R_v, 0); 
-%Q_ao = (P_ao - P_sa) / R_ao; 
 Q_sa = (P_sa - P_sv) / R_sa; 
 Q_tv = max((P_sv - P_rv) / R_sv, 0); 
 Q_pv = max((P_rv - P_pa) / R_v, 0); 
@@ -193,19 +187,18 @@ dxm_sep = Tx_lv + Tx_sep + Tx_rv;
 dxm_rv  = V_rv + 0.5 * Vw_rv + 0.5 * Vw_sep + Vm_sep - Vm_rv;
 dym     = Ty_lv + Ty_sep + Ty_rv; 
 
-% 5 - 11
+% 5 - 7
+dLsc_lv  = ((Ls_lv  - Lsc_lv)  /Lse_iso - 1) * v_max;
+dLsc_sep = ((Ls_sep - Lsc_sep) /Lse_iso - 1) * v_max;
+dLsc_rv  = ((Ls_rv  - Lsc_rv)  /Lse_iso - 1) * v_max;
+
+% 8 - 14
 dV_lv = Q_mv - Q_av; 
-%dV_ao = Q_av - Q_ao; 
 dV_sa = Q_av - Q_sa; 
 dV_sv = Q_sa - Q_tv; 
 dV_rv = Q_tv - Q_pv; 
 dV_pa = Q_pv - Q_pa; 
 dV_pv = Q_pa - Q_mv; 
-
-% 12 - 14
-dLsc_lv  = ((Ls_lv  - Lsc_lv)  /Lse_iso - 1) * v_max;
-dLsc_sep = ((Ls_sep - Lsc_sep) /Lse_iso - 1) * v_max;
-dLsc_rv  = ((Ls_rv  - Lsc_rv)  /Lse_iso - 1) * v_max;
 
 % 15 - 17
 dCa_lv  = 1/tauR * CaL_lv  * Frise + 1/tauD * (Ca_rest - Ca_lv)  / (1 + exp((T_lv  - tc) / tauD)); 
@@ -213,8 +206,8 @@ dCa_sep = 1/tauR * CaL_sep * Frise + 1/tauD * (Ca_rest - Ca_sep) / (1 + exp((T_s
 dCa_rv  = 1/tauR * CaL_rv  * Frise + 1/tauD * (Ca_rest - Ca_rv)  / (1 + exp((T_rv  - tc) / tauD)); 
 
 dxdt = [dxm_lv; dxm_sep; dxm_rv; dym;
-    dV_lv; dV_sa; dV_sv; dV_rv; dV_pa; dV_pv; %dV_ao; 
     dLsc_lv; dLsc_sep; dLsc_rv; 
+    dV_lv; dV_sa; dV_sv; dV_rv; dV_pa; dV_pv; 
     dCa_lv; dCa_sep; dCa_rv; 
     ]; 
 

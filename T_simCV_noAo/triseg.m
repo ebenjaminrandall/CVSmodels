@@ -29,14 +29,14 @@ xm_sep = x(2);
 xm_rv  = x(3); 
 ym     = x(4); 
 
-% Volumes 
-V_lv = init(5); 
-V_rv = init(8);
-
 % Contractile element length 
-Lsc_lv  = init(11); 
-Lsc_sep = init(12); 
-Lsc_rv  = init(13); 
+Lsc_lv  = init(5); 
+Lsc_sep = init(6); 
+Lsc_rv  = init(7); 
+
+% Volumes 
+V_lv = init(8); 
+V_rv = init(11);
 
 % Mechanical activation 
 Ca_lv  = init(14); 

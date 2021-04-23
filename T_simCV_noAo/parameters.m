@@ -18,15 +18,13 @@ ym0    = data.deformation.ym0;
 %% Stressed Volumes (m^3)
 
 d_lv = 0.025;
-%d_ao = 0.04;
 d_sa = .14; 
 d_sv = 0.75; 
 d_rv = 0.025; 
 d_pa = 0.04;
-d_pv = .1 - d_pa; %0.075; 
+d_pv = .1 - d_pa; 
 
 V_lv0 = d_lv*Vtot; 
-%V_ao0 = d_ao*Vtot; 
 V_sa0 = d_sa*Vtot;
 V_sv0 = d_sv*Vtot;
 V_rv0 = d_rv*Vtot; 
@@ -36,7 +34,6 @@ V_pv0 = d_pv*Vtot;
 %% Unstressed Volumes (m^3)
 
 vaperc = .7; %Vu for arteries is ~72% of Vtot - Beneken
-%V_aou = V_ao0*vaperc;
 V_sau = V_sa0*vaperc;
 V_pau = V_pa0*vaperc; 
 
@@ -57,15 +54,6 @@ k_lvm = (3   / 7.5) / DBP;
 
 P_lvM   = k_lvM * SPbar;
 P_lvm   = k_lvm * DPbar;
-
-% % AO
-% k_aoM = (125 / 7.5) / SBP; 
-% k_ao  = (105 / 7.5) / MBP; 
-% k_aom = (85  / 7.5) / DBP;
-% 
-% P_aoM   = k_aoM * SPbar; 
-% P_aobar = k_ao  * Pbar; 
-% P_aom   = k_aom * DPbar; 
 
 % SA
 k_saM = (120 / 7.5) / SBP; 
@@ -115,7 +103,6 @@ P_pvm   = k_pvm * DPbar;
 E_lvm = P_lvm / V_lv0; % Minimal elastance of the left ventricle 
 E_rvm = P_rvm / V_rv0; 
 
-%C_ao = (V_ao0 - V_aou)/P_aobar; 
 C_sa = (V_sa0 - V_sau)/P_sabar; 
 C_sv = (V_sv0 - V_svu)/P_svbar; 
 C_pa = (V_pa0 - V_pau)/P_pabar; 
@@ -123,7 +110,6 @@ C_pv = (V_pv0 - V_pvu)/P_pvbar;
 
 %% Resistances (mmHg s mL^(-1) converted to kPa s m^(-3))
 
-%R_ao = (P_aobar - P_sabar)/CO; 
 R_sa = (P_sabar - P_svbar)/CO;
 R_sv = (P_svbar - P_rvm)/CO;
 R_pa = (P_pabar - P_pvbar)/CO; 
@@ -193,7 +179,7 @@ adjpars = [E_lvm; E_rvm;
     V_sau; V_svu; V_pau; V_pvu; 
     ]; 
 
-fixpars = [k_lvm; k_ao; k_sa; k_sv; k_rvm; k_pa; k_pv; 
+fixpars = [k_lvm; k_sa; k_sv; k_rvm; k_pa; k_pv; 
     ]; 
     
 
