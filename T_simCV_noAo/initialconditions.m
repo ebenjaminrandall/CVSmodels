@@ -7,24 +7,29 @@ DPbar = data.DPbar;
 
 fixpars = data.fixpars; 
 
-k_lvm = fixpars(1); 
-k_sa  = fixpars(2); 
-k_sv  = fixpars(3); 
-k_rvm = fixpars(4); 
-k_pa  = fixpars(5); 
-k_pv  = fixpars(6); 
+k_lam = fixpars(1); 
+k_lvm = fixpars(2); 
+k_sa  = fixpars(3); 
+k_sv  = fixpars(4);
+k_ram = fixpars(5); 
+k_rvm = fixpars(6); 
+k_pa  = fixpars(7); 
+k_pv  = fixpars(8); 
 
 %% Adjustable parameters
 
-E_lvm = pars(1);
-E_rvm = pars(2); 
+E_lam = pars(2); 
+E_lvm = pars(3);
 
-C_sa = pars(3); 
-C_sv = pars(4); 
-C_pa = pars(5); 
-C_pv = pars(6); 
+E_ram = pars(5);
+E_rvm = pars(6); 
 
-Ca_rest = pars(28); 
+C_sa = pars(7); 
+C_sv = pars(8); 
+C_pa = pars(9); 
+C_pv = pars(10); 
+
+Ca_rest = pars(34); 
 
 %% Pressures 
 
@@ -33,7 +38,9 @@ P_sv = k_sv * Pbar;
 P_pa = k_pa * Pbar; 
 P_pv = k_pv * Pbar; 
 
-P_lvm = k_lvm * DPbar; 
+P_lam = k_lam * DPbar;
+P_lvm = k_lvm * DPbar;
+P_ram = k_ram * DPbar; 
 P_rvm = k_rvm * DPbar; 
 
 %% Initial conditions 
@@ -49,22 +56,24 @@ Lsc_lv0  = 2 * 1e-6;
 Lsc_sep0 = 2 * 1e-6;
 Lsc_rv0  = 2 * 1e-6;
 
-% 8 - 14 (m^3)
+% 8 - 15 (m^3)
+V_la0 = P_lam / E_lam; 
 V_lv0 = P_lvm / E_lvm;
 V_sa0 = C_sa * P_sa;  
 V_sv0 = C_sv * P_sv;  
+V_ra0 = P_ram / E_ram; 
 V_rv0 = P_rvm / E_rvm; 
 V_pa0 = C_pa * P_pa;  
 V_pv0 = C_pv * P_pv;   
 
-% 15 - 17
+% 16 - 18
 Ca_lv0  = Ca_rest;
 Ca_sep0 = Ca_rest;
 Ca_rv0  = Ca_rest;
 
 init = [xm_lv0; xm_sep0; xm_rv0; ym0;
     Lsc_lv0; Lsc_sep0; Lsc_rv0; 
-    V_lv0; V_sa0; V_sv0; V_rv0; V_pa0; V_pv0; 
+    V_la0; V_lv0; V_sa0; V_sv0; V_ra0; V_rv0; V_pa0; V_pv0; 
     Ca_lv0; Ca_sep0; Ca_rv0; 
     ]; 
 

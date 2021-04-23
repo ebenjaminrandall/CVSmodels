@@ -4,49 +4,57 @@ HR = data.HR;
 
 %% Parameters
 
+E_laM = pars(1);
+E_lam = pars(2);
+
+E_raM = pars(4);
+E_ram = pars(5); 
+
 % Compliance (mL mmHg^(-1))
-C_sa = pars(3); 
-C_sv = pars(4); 
-C_pa = pars(5); 
-C_pv = pars(6); 
+C_sa = pars(7); 
+C_sv = pars(8); 
+C_pa = pars(9); 
+C_pv = pars(10); 
 
 % Resistance (mmHg s mL^(-1))
-R_sa = pars(7); 
-%R_sv = pars(8); 
-R_pa = pars(8); 
-%R_pv = pars(10); 
+R_sa = pars(11); 
+R_sv = pars(12); 
+R_pa = pars(13); 
+R_pv = pars(14); 
 
-R_m_valve = pars(9); 
-R_a_valve = pars(10); 
-R_t_valve = pars(11); 
-R_p_valve = pars(12); 
+R_m_valve = pars(15); 
+R_a_valve = pars(16); 
+R_t_valve = pars(17); 
+R_p_valve = pars(18); 
 
 % Wall volume of ventricular wall segment (m^3)
-Vw_lv  = pars(13); 
-Vw_sep = pars(14); 
-Vw_rv  = pars(15); 
+Vw_lv  = pars(19); 
+Vw_sep = pars(20); 
+Vw_rv  = pars(21); 
 
 % Reference midwall surface area (m^2)
-Amref_lv  = pars(16); 
-Amref_sep = pars(17); 
-Amref_rv  = pars(18); 
+Amref_lv  = pars(22); 
+Amref_sep = pars(23); 
+Amref_rv  = pars(24); 
 
 % Time-scale (s)
-tauR  = pars(19); 
-tauD  = pars(20); 
-tausc = pars(21); 
+tauR  = pars(25); 
+tauD  = pars(26); 
+tausc = pars(27); 
 
 % Sarcomere length parameters (m)
-Lsref   = pars(22);
-Lsc0    = pars(23); 
-Lse_iso = pars(24); 
+Lsref   = pars(28);
+Lsc0    = pars(29); 
+Lse_iso = pars(30); 
 
 % Force scaling factors (kPa) 
-k_act = pars(25); 
-k_pas = pars(26); 
+k_act = pars(31); 
+k_pas = pars(32); 
 
-v_max   = pars(27); % m s^(-1) sarcomere length shortening velocity
-Ca_rest = pars(28); % dimensionless Diastolic resting level of activation
+v_max   = pars(33); % m s^(-1) sarcomere length shortening velocity
+Ca_rest = pars(34); % dimensionless Diastolic resting level of activation
+
+
 
 %% Variables 
 
@@ -64,17 +72,19 @@ Lsc_sep = x(6);
 Lsc_rv  = x(7); 
 
 % Volumes 
-V_lv = x(8); 
-V_sa = x(9); 
-V_sv = x(10); 
-V_rv = x(11);
-V_pa = x(12); 
-V_pv = x(13); 
+V_la = x(8); 
+V_lv = x(9); 
+V_sa = x(10); 
+V_sv = x(11);
+V_ra = x(12); 
+V_rv = x(13);
+V_pa = x(14); 
+V_pv = x(15); 
 
 % Mechanical activation 
-Ca_lv  = x(14); 
-Ca_sep = x(15);
-Ca_rv  = x(16); 
+Ca_lv  = x(16); 
+Ca_sep = x(17);
+Ca_rv  = x(18); 
 
 %% Heart and sarcomere model 
 
@@ -139,10 +149,10 @@ Ty_sep = Tm_sep * (-xm_sep^2 + ym^2) / (xm_sep^2 + ym^2);
 Ty_rv  = Tm_rv  * (-xm_rv^2  + ym^2) / (xm_rv^2  + ym^2);
 
 % Ventricular pressure (kPa)
-ptrans1 = 2 * Tx_lv / ym; 
-ptrans3 = 2 * Tx_rv / ym; 
-P_lv = -ptrans1; 
-P_rv = ptrans3; 
+ptrans_lv = 2 * Tx_lv / ym; 
+ptrans_rv = 2 * Tx_rv / ym; 
+P_lv = -ptrans_lv; 
+P_rv = ptrans_rv; 
 
 %% Calcium handling 
 
@@ -164,19 +174,31 @@ T_rv  = tausc * (0.29 + 0.3 * (Lsc_rv  / 1e-6));
 
 %% Lumped circulatory model 
 
+% Rise of mechanical activation 
+tc_a    = mod(t + 0.2, T); 
+x_a     = min(8, max(0, tc_a / tauR)); 
+Y_a = 0.02 * x_a^3 * (8 - x_a)^2 * exp(-x_a);
+
+E_la = (E_laM - E_lam) * Y_a + E_lam; 
+E_ra = (E_raM - E_ram) * Y_a + E_ram; 
+
 % Pressure (kPa)
+P_la = V_la * E_la; 
 P_sa = V_sa / C_sa; 
 P_sv = V_sv / C_sv; 
+P_ra = V_ra * E_ra; 
 P_pa = V_pa / C_pa; 
 P_pv = V_pv / C_pv; 
 
 % Flow (m^3 s^1) 
-Q_m_valve = max((P_pv - P_lv) / R_m_valve, 0); 
+Q_m_valve = max((P_la - P_lv) / R_m_valve, 0); 
 Q_a_valve = max((P_lv - P_sa) / R_a_valve, 0); 
-Q_sa      = (P_sa - P_sv) / R_sa; 
-Q_t_valve = max((P_sv - P_rv) / R_t_valve, 0); 
+Q_sa      = (P_sa - P_sv) / R_sa;
+Q_sv      = (P_sv - P_ra) / R_sv; 
+Q_t_valve = max((P_ra - P_rv) / R_t_valve, 0); 
 Q_p_valve = max((P_rv - P_pa) / R_p_valve, 0); 
 Q_pa      = (P_pa - P_pv) / R_pa; 
+Q_pv      = (P_pv - P_la) / R_pv; 
 
 %% ODEs
 
@@ -192,12 +214,14 @@ dLsc_sep = ((Ls_sep - Lsc_sep) /Lse_iso - 1) * v_max;
 dLsc_rv  = ((Ls_rv  - Lsc_rv)  /Lse_iso - 1) * v_max;
 
 % 8 - 14
+dV_la = Q_pv      - Q_m_valve; 
 dV_lv = Q_m_valve - Q_a_valve; 
 dV_sa = Q_a_valve - Q_sa; 
-dV_sv = Q_sa      - Q_t_valve; 
+dV_sv = Q_sa      - Q_sv; 
+dV_ra = Q_sv      - Q_t_valve;
 dV_rv = Q_t_valve - Q_p_valve; 
 dV_pa = Q_p_valve - Q_pa; 
-dV_pv = Q_pa      - Q_m_valve; 
+dV_pv = Q_pa      - Q_pv; 
 
 % 15 - 17
 dCa_lv  = 1/tauR * CaL_lv  * Frise + 1/tauD * (Ca_rest - Ca_lv)  / (1 + exp((T_lv  - tc) / tauD)); 
@@ -206,11 +230,11 @@ dCa_rv  = 1/tauR * CaL_rv  * Frise + 1/tauD * (Ca_rest - Ca_rv)  / (1 + exp((T_r
 
 dxdt = [dxm_lv; dxm_sep; dxm_rv; dym;
     dLsc_lv; dLsc_sep; dLsc_rv; 
-    dV_lv; dV_sa; dV_sv; dV_rv; dV_pa; dV_pv; 
+    dV_la; dV_lv; dV_sa; dV_sv; dV_ra; dV_rv; dV_pa; dV_pv; 
     dCa_lv; dCa_sep; dCa_rv; 
     ]; 
 
-outputs = [P_lv; P_sa; P_sv; P_rv; P_pa; P_pv; 
+outputs = [P_la; P_lv; P_sa; P_sv; P_ra; P_rv; P_pa; P_pv; 
     Vm_lv; Vm_sep; Vm_rv; 
     Am_lv; Am_sep; Am_rv; 
     Cm_lv; Cm_sep; Cm_rv; 
@@ -219,7 +243,7 @@ outputs = [P_lv; P_sa; P_sv; P_rv; P_pa; P_pv;
     sigma_act_lv; sigma_act_sep; sigma_act_rv; 
     sigma_lv; sigma_sep; sigma_rv; 
     Q_m_valve; Q_a_valve; Q_t_valve; Q_p_valve; 
-    Q_sa; Q_pa;  
+    Q_sa; Q_sv; Q_pa; Q_pv;   
     ];
 
 end 

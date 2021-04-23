@@ -17,16 +17,20 @@ ym0    = data.deformation.ym0;
 
 %% Stressed Volumes (m^3)
 
-d_lv = 0.025;
+d_la = 0.005; 
+d_lv = 0.02;
 d_sa = .15; 
-d_sv = 0.59; 
-d_rv = 0.025; 
+d_sv = 0.59;
+d_ra = 0.005;
+d_rv = 0.02; 
 d_pa = 0.06;
 d_pv = .15; 
 
+V_la0 = d_la*Vtot; 
 V_lv0 = d_lv*Vtot; 
 V_sa0 = d_sa*Vtot;
 V_sv0 = d_sv*Vtot;
+V_ra0 = d_ra*Vtot; 
 V_rv0 = d_rv*Vtot; 
 V_pa0 = d_pa*Vtot; 
 V_pv0 = d_pv*Vtot;
@@ -54,9 +58,16 @@ SBP = 120 / 7.5;
 DBP = 80 / 7.5; 
 MBP = 100 / 7.5;
 
+% LA
+k_laM = (10 / 7.5) / SBP; 
+k_lam = (2 / 7.5) / DBP; 
+
+P_laM = k_laM * SPbar; 
+P_lam = k_lam * DPbar; 
+
 % LV
 k_lvM = (125 / 7.5) / SBP;
-k_lvm = (3   / 7.5) / DBP;
+k_lvm = (5   / 7.5) / DBP;
 
 P_lvM   = k_lvM * SPbar;
 P_lvm   = k_lvm * DPbar;
@@ -78,6 +89,13 @@ k_svm = (3.5 / 7.5) / DBP;
 P_svM   = k_svM * SPbar;
 P_svbar = k_sv  * Pbar; 
 P_svm   = k_svm * DPbar;
+
+% RA 
+k_raM = (10 / 7.5) / SBP; 
+k_ram = (2.5 / 7.5) / DBP; 
+
+P_raM = k_raM * SPbar; 
+P_ram = k_ram * DPbar; 
 
 % RV
 k_rvM = (25 / 7.5) / SBP; 
@@ -106,6 +124,11 @@ P_pvm   = k_pvm * DPbar;
 
 %% Compliances (mL mmHg^(-1) converted to m^3 kPa^(-1))
 
+E_laM = P_laM / V_la0; 
+E_lam = P_lam / V_la0; 
+E_raM = P_raM / V_ra0;
+E_ram = P_ram / V_ra0; 
+
 E_lvm = P_lvm / V_lv0; % Minimal elastance of the left ventricle 
 E_rvm = P_rvm / V_rv0; 
 
@@ -117,9 +140,9 @@ C_pv = V_pvs/P_pvM;
 %% Resistances (mmHg s mL^(-1) converted to kPa s m^(-3))
 
 R_sa = (P_sabar - P_svbar)/CO;
-%R_sv = (P_svbar - P_rvm)/CO;
+R_sv = (P_svbar - P_ram)/CO;
 R_pa = (P_pabar - P_pvbar)/CO; 
-%R_pv = (P_pvbar - P_lvm)/CO;
+R_pv = (P_pvbar - P_lam)/CO;
 
 R_m_valve = 1e-3 / 7.5e-6; %1e-4 / 7.5 / 1e-6;
 R_a_valve = 1e-4 / 7.5e-6; 
@@ -167,13 +190,13 @@ Gamma_lv_d     = - (2 / 3) * z_lv_d * (1 + (1 / 3) * z_lv_d^2 + (1 / 5) * z_lv_d
 
 % Force scaling factors (kPa)
 k_pas = P_lvm / (Gamma_lv_d * sigma_pas_lv_d);
-k_act = 120; 
+k_act = 120 * 2; 
 
 %% Outputs
 
-adjpars = [E_lvm; E_rvm;
+adjpars = [E_laM; E_lam; E_lvm; E_raM; E_ram; E_rvm; 
     C_sa; C_sv; C_pa; C_pv; 
-    R_sa; R_pa; % R_sv; R_pv; 
+    R_sa; R_sv; R_pa; R_pv; 
     R_m_valve; R_a_valve; R_t_valve; R_p_valve;  
     Vw_lv; Vw_sep; Vw_rv; 
     Amref_lv; Amref_sep; Amref_rv; 
@@ -183,9 +206,10 @@ adjpars = [E_lvm; E_rvm;
     v_max; 
     Ca_rest; 
     V_sau; V_svu; V_pau; V_pvu; 
+    
     ]; 
 
-fixpars = [k_lvm; k_sa; k_sv; k_rvm; k_pa; k_pv; 
+fixpars = [k_lam; k_lvm; k_sa; k_sv; k_ram; k_rvm; k_pa; k_pv; 
     ]; 
     
 

@@ -74,20 +74,20 @@ data.fixpars      = fixpars;
 
 outputs = model_sol(adjpars,data); 
 
-%V_la = outputs.volumes.V_la; 
+V_la = outputs.volumes.V_la; 
 V_lv = outputs.volumes.V_lv; 
 V_sa = outputs.volumes.V_sa; 
 V_sv = outputs.volumes.V_sv; 
-%V_ra = outputs.volumes.V_ra; 
+V_ra = outputs.volumes.V_ra; 
 V_rv = outputs.volumes.V_rv; 
 V_pa = outputs.volumes.V_pa; 
 V_pv = outputs.volumes.V_pv; 
 
-%P_la = outputs.pressures.P_la; 
+P_la = outputs.pressures.P_la; 
 P_lv = outputs.pressures.P_lv; 
 P_sa = outputs.pressures.P_sa; 
 P_sv = outputs.pressures.P_sv; 
-%P_ra = outputs.pressures.P_ra; 
+P_ra = outputs.pressures.P_ra; 
 P_rv = outputs.pressures.P_rv; 
 P_pa = outputs.pressures.P_pa; 
 P_pv = outputs.pressures.P_pv; 
@@ -95,11 +95,11 @@ P_pv = outputs.pressures.P_pv;
 Q_m_valve = outputs.flows.Q_m_valve; 
 Q_a_valve = outputs.flows.Q_a_valve; 
 Q_sa      = outputs.flows.Q_sa; 
-%Q_sv      = outputs.flows.Q_sv; 
+Q_sv      = outputs.flows.Q_sv; 
 Q_t_valve = outputs.flows.Q_t_valve; 
 Q_p_valve = outputs.flows.Q_p_valve; 
 Q_pa      = outputs.flows.Q_pa; 
-%Q_pv      = outputs.flows.Q_pv; 
+Q_pv      = outputs.flows.Q_pv; 
 
 b = mod(tspan,round(60/HR,3)); 
 beats = find(round(b,3) ==  0); 
@@ -148,10 +148,10 @@ hfig3 = figure(3);
 clf 
 hold on
 plot(t_beat,P_lv(beat),'b','linewidth',2)
-%plot(t_beat,P_la(beat),'r','linewidth',2)
+plot(t_beat,P_la(beat),'r','linewidth',2)
 plot(t_beat,P_sa(beat),'m','linewidth',2)
 set(gca,'FontSize',25)
-legend('P_{lv}','P_{sa}','orientation','horizontal')%'P_{la}',
+legend('P_{lv}','P_{la}','P_{sa}','orientation','horizontal')%
 xlabel('Time (s)')
 ylabel('Pressure (mmHg)')
 xlim([t_beat(1) t_beat(end)])
@@ -161,11 +161,11 @@ clf
 hold on
 plot(t_beat,P_sv(beat),'k','linewidth',2)
 plot(t_beat,P_rv(beat),'b','linewidth',2)
-%plot(t_beat,P_ra(beat),'r','linewidth',2)
+plot(t_beat,P_ra(beat),'r','linewidth',2)
 plot(t_beat,P_pa(beat),'c','linewidth',2)
 plot(t_beat,P_pv(beat),'m','linewidth',2)
 set(gca,'FontSize',25)
-legend('P_{sv}','P_{rv}','P_{pa}','P_{pv}','orientation','horizontal')%'P_{ra}',
+legend('P_{sv}','P_{rv}','P_{ra}','P_{pa}','P_{pv}','orientation','horizontal')%
 xlabel('Time (s)')
 ylabel('Pressure (mmHg)')
 xlim([t_beat(1) t_beat(end)])

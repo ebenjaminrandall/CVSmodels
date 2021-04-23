@@ -4,23 +4,23 @@ function f = triseg(x,pars,data,init)
 %% Parameters 
 
 % Wall volume of ventricular wall segment (m^3)
-Vw_lv  = pars(13); 
-Vw_sep = pars(14); 
-Vw_rv  = pars(15); 
+Vw_lv  = pars(19); 
+Vw_sep = pars(20); 
+Vw_rv  = pars(21); 
 
 % Reference midwall surface area (m^2)
-Amref_lv  = pars(16); 
-Amref_sep = pars(17); 
-Amref_rv  = pars(18); 
+Amref_lv  = pars(22); 
+Amref_sep = pars(23); 
+Amref_rv  = pars(24); 
 
 % Sarcomere length parameters (µm)
-Lsref   = pars(22);
-Lsc0    = pars(23); 
-Lse_iso = pars(24); 
+Lsref   = pars(28);
+Lsc0    = pars(29); 
+Lse_iso = pars(30); 
 
 % Force scaling factors (mmHg)
-k_act = pars(25); 
-k_pas = pars(26);
+k_act = pars(31); 
+k_pas = pars(32);
 
 %% Variables 
 
@@ -35,13 +35,13 @@ Lsc_sep = init(6);
 Lsc_rv  = init(7); 
 
 % Volumes 
-V_lv = init(8); 
-V_rv = init(11);
+V_lv = init(9); 
+V_rv = init(13);
 
 % Mechanical activation 
-Ca_lv  = init(14); 
-Ca_sep = init(15);
-Ca_rv  = init(16); 
+Ca_lv  = init(16); 
+Ca_sep = init(17);
+Ca_rv  = init(18); 
 
 %% Heart and sarcomere model 
 
