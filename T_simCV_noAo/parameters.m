@@ -18,11 +18,11 @@ ym0    = data.deformation.ym0;
 %% Stressed Volumes (m^3)
 
 d_lv = 0.025;
-d_sa = .14; 
-d_sv = 0.75; 
+d_sa = .15; 
+d_sv = 0.59; 
 d_rv = 0.025; 
-d_pa = 0.04;
-d_pv = .1 - d_pa; 
+d_pa = 0.06;
+d_pv = .15; 
 
 V_lv0 = d_lv*Vtot; 
 V_sa0 = d_sa*Vtot;
@@ -40,6 +40,12 @@ V_pau = V_pa0*vaperc;
 vvperc = .9; %Vu for veins is ~92% of Vtot - Beneken
 V_svu = V_sv0*vvperc; 
 V_pvu = V_pv0*vvperc; 
+
+% Stressed volumes
+V_sas = V_sa0 - V_sau; 
+V_svs = V_sv0 - V_svu; 
+V_pas = V_pa0 - V_pau; 
+V_pvs = V_pv0 - V_pvu; 
 
 %% Pressures (kPa)
 %Ratios from Boron book (mmHg converted to kPa)
@@ -65,9 +71,9 @@ P_sabar = k_sa  * Pbar;
 P_sam   = k_sam * DPbar; 
 
 % SV
-k_svM = (15 / 7.5) / SBP;
-k_sv  = (10 / 7.5) / MBP;
-k_svm = (5 / 7.5) / DBP;
+k_svM = (4.5 / 7.5) / SBP;
+k_sv  = (4 / 7.5) / MBP;
+k_svm = (3.5 / 7.5) / DBP;
 
 P_svM   = k_svM * SPbar;
 P_svbar = k_sv  * Pbar; 
@@ -81,18 +87,18 @@ P_rvM   = k_rvM * SPbar;
 P_rvm   = k_rvm * DPbar;
 
 % PA
-k_paM = (25 / 7.5) / SBP; 
+k_paM = (20 / 7.5) / SBP; 
 k_pa  = (15 / 7.5) / MBP;
-k_pam = (5 / 7.5) / DBP; 
+k_pam = (10 / 7.5) / DBP; 
 
 P_paM   = k_paM * SPbar; 
 P_pabar = k_pa  * Pbar; 
 P_pam   = k_pam * DPbar; 
 
 % PV
-k_pvM = (5  / 7.5) / SBP; 
+k_pvM = (4.5  / 7.5) / SBP; 
 k_pv  = (4  / 7.5) / MBP;
-k_pvm = (3  / 7.5) / DBP; 
+k_pvm = (3.5  / 7.5) / DBP; 
 
 P_pvM   = k_pvM * SPbar; 
 P_pvbar = k_pv  * Pbar; 
@@ -103,18 +109,22 @@ P_pvm   = k_pvm * DPbar;
 E_lvm = P_lvm / V_lv0; % Minimal elastance of the left ventricle 
 E_rvm = P_rvm / V_rv0; 
 
-C_sa = (V_sa0 - V_sau)/P_sabar; 
-C_sv = (V_sv0 - V_svu)/P_svbar; 
-C_pa = (V_pa0 - V_pau)/P_pabar; 
-C_pv = (V_pv0 - V_pvu)/P_pvbar; 
+C_sa = V_sas/P_saM; 
+C_sv = V_svs/P_svM; 
+C_pa = V_pas/P_paM; 
+C_pv = V_pvs/P_pvM; 
 
 %% Resistances (mmHg s mL^(-1) converted to kPa s m^(-3))
 
 R_sa = (P_sabar - P_svbar)/CO;
-R_sv = (P_svbar - P_rvm)/CO;
+%R_sv = (P_svbar - P_rvm)/CO;
 R_pa = (P_pabar - P_pvbar)/CO; 
-R_pv = (P_pvbar - P_lvm)/CO;
-R_v  = 1e-4 / 7.5 / 1e-6;
+%R_pv = (P_pvbar - P_lvm)/CO;
+
+R_m_valve = 1e-3 / 7.5e-6; %1e-4 / 7.5 / 1e-6;
+R_a_valve = 1e-4 / 7.5e-6; 
+R_t_valve = 1e-3 / 7.5e-6; 
+R_p_valve = 1e-4 / 7.5e-6; 
 
 %% Heart model 
 
@@ -161,14 +171,10 @@ k_act = 120;
 
 %% Outputs
 
-R_ao = 1; 
-C_ao = 1; 
-V_aou = 1; 
-k_ao = 1; 
-
 adjpars = [E_lvm; E_rvm;
     C_sa; C_sv; C_pa; C_pv; 
-    R_sa; R_sv; R_pa; R_pv; R_v; 
+    R_sa; R_pa; % R_sv; R_pv; 
+    R_m_valve; R_a_valve; R_t_valve; R_p_valve;  
     Vw_lv; Vw_sep; Vw_rv; 
     Amref_lv; Amref_sep; Amref_rv; 
     tauR; tauD; tausc; 

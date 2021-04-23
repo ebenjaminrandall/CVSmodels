@@ -12,42 +12,41 @@ C_pv = pars(6);
 
 % Resistance (mmHg s mL^(-1))
 R_sa = pars(7); 
-R_sv = pars(8); 
-R_pa = pars(9); 
-R_pv = pars(10); 
-R_v  = pars(11); 
+%R_sv = pars(8); 
+R_pa = pars(8); 
+%R_pv = pars(10); 
+
+R_m_valve = pars(9); 
+R_a_valve = pars(10); 
+R_t_valve = pars(11); 
+R_p_valve = pars(12); 
 
 % Wall volume of ventricular wall segment (m^3)
-Vw_lv  = pars(12); 
-Vw_sep = pars(13); 
-Vw_rv  = pars(14); 
+Vw_lv  = pars(13); 
+Vw_sep = pars(14); 
+Vw_rv  = pars(15); 
 
 % Reference midwall surface area (m^2)
-Amref_lv  = pars(15); 
-Amref_sep = pars(16); 
-Amref_rv  = pars(17); 
+Amref_lv  = pars(16); 
+Amref_sep = pars(17); 
+Amref_rv  = pars(18); 
 
 % Time-scale (s)
-tauR  = pars(18); 
-tauD  = pars(19); 
-tausc = pars(20); 
+tauR  = pars(19); 
+tauD  = pars(20); 
+tausc = pars(21); 
 
 % Sarcomere length parameters (m)
-Lsref   = pars(21);
-Lsc0    = pars(22); 
-Lse_iso = pars(23); 
+Lsref   = pars(22);
+Lsc0    = pars(23); 
+Lse_iso = pars(24); 
 
 % Force scaling factors (kPa) 
-k_act = pars(24); 
-k_pas = pars(25); 
+k_act = pars(25); 
+k_pas = pars(26); 
 
-v_max   = pars(26); % m s^(-1) sarcomere length shortening velocity
-Ca_rest = pars(27); % dimensionless Diastolic resting level of activation
-
-V_sau = pars(28);
-V_svu = pars(29); 
-V_pau = pars(30); 
-V_pvu = pars(31); 
+v_max   = pars(27); % m s^(-1) sarcomere length shortening velocity
+Ca_rest = pars(28); % dimensionless Diastolic resting level of activation
 
 %% Variables 
 
@@ -153,7 +152,7 @@ CaL_sep = tanh(4 * ((Lsc_sep - Lsc0) / 1e-6)^2);
 CaL_rv  = tanh(4 * ((Lsc_rv  - Lsc0) / 1e-6)^2); 
 
 % Rise of mechanical activation 
-T     = 1 / HR; 
+T     = 60 / HR; 
 tc    = mod(t, T); 
 x     = min(8, max(0, tc / tauR)); 
 Frise = 0.02 * x^3 * (8 - x)^2 * exp(-x);
@@ -172,11 +171,11 @@ P_pa = V_pa / C_pa;
 P_pv = V_pv / C_pv; 
 
 % Flow (m^3 s^1) 
-Q_m_valve = max((P_pv - P_lv) / R_pv, 0); 
-Q_a_valve = max((P_lv - P_sa) / R_v, 0); 
+Q_m_valve = max((P_pv - P_lv) / R_m_valve, 0); 
+Q_a_valve = max((P_lv - P_sa) / R_a_valve, 0); 
 Q_sa      = (P_sa - P_sv) / R_sa; 
-Q_t_valve = max((P_sv - P_rv) / R_sv, 0); 
-Q_p_valve = max((P_rv - P_pa) / R_v, 0); 
+Q_t_valve = max((P_sv - P_rv) / R_t_valve, 0); 
+Q_p_valve = max((P_rv - P_pa) / R_p_valve, 0); 
 Q_pa      = (P_pa - P_pv) / R_pa; 
 
 %% ODEs

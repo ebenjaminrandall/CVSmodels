@@ -7,10 +7,10 @@ ODE_TOL = data.gpars.ODE_TOL;
 
 %% Parameters 
 
-V_sau = adjpars(28);
-V_svu = adjpars(29); 
-V_pau = adjpars(30); 
-V_pvu = adjpars(31); 
+V_sau = adjpars(29);
+V_svu = adjpars(30); 
+V_pau = adjpars(31); 
+V_pvu = adjpars(32); 
 
 %% Get initial conditions
 

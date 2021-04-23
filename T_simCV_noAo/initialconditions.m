@@ -24,12 +24,7 @@ C_sv = pars(4);
 C_pa = pars(5); 
 C_pv = pars(6); 
 
-Ca_rest = pars(27); 
-
-V_sau = pars(28);
-V_svu = pars(29); 
-V_pau = pars(30); 
-V_pvu = pars(31); 
+Ca_rest = pars(28); 
 
 %% Pressures 
 

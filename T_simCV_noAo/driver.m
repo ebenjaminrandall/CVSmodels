@@ -2,6 +2,8 @@
 
 clear all
 
+printon = 0; 
+
 %% Load pseudodata
 
 % Mean values 
@@ -13,7 +15,7 @@ SPbar = SPbar / 7.5; % convert from mmHg to kPa
 DPbar = DPbar / 7.5; % convert from mmHg to kPa 
 Pbar  = Pbar  / 7.5; % convert from mmHg to kPa 
 
-HR    = 60  / 60;  % convert from beats per min to beats per sec 
+HR    = 60;  % convert from beats per min to beats per sec 
 
 % Total blodo volume % convert from mL to m^3
 Vtot = 4500 * 1e-6; 
@@ -72,66 +74,134 @@ data.fixpars      = fixpars;
 
 outputs = model_sol(adjpars,data); 
 
+%V_la = outputs.volumes.V_la; 
 V_lv = outputs.volumes.V_lv; 
 V_sa = outputs.volumes.V_sa; 
+V_sv = outputs.volumes.V_sv; 
+%V_ra = outputs.volumes.V_ra; 
 V_rv = outputs.volumes.V_rv; 
+V_pa = outputs.volumes.V_pa; 
+V_pv = outputs.volumes.V_pv; 
 
+%P_la = outputs.pressures.P_la; 
 P_lv = outputs.pressures.P_lv; 
 P_sa = outputs.pressures.P_sa; 
+P_sv = outputs.pressures.P_sv; 
+%P_ra = outputs.pressures.P_ra; 
 P_rv = outputs.pressures.P_rv; 
+P_pa = outputs.pressures.P_pa; 
+P_pv = outputs.pressures.P_pv; 
+
+Q_m_valve = outputs.flows.Q_m_valve; 
+Q_a_valve = outputs.flows.Q_a_valve; 
+Q_sa      = outputs.flows.Q_sa; 
+%Q_sv      = outputs.flows.Q_sv; 
+Q_t_valve = outputs.flows.Q_t_valve; 
+Q_p_valve = outputs.flows.Q_p_valve; 
+Q_pa      = outputs.flows.Q_pa; 
+%Q_pv      = outputs.flows.Q_pv; 
+
+b = mod(tspan,round(60/HR,3)); 
+beats = find(round(b,3) ==  0); 
+beat = beats(end-3):beats(end-1); 
+
+t_beat = tspan(beat) - tspan(beat(1)); 
+
+SV = max(V_lv(beat)) - min(V_lv(beat)) % mL
+EF = SV / max(V_lv(beat)) % dimensionless
+CO = trapz(t_beat/60,Q_a_valve(beat))/(t_beat(end)/60 - t_beat(1)/60) %SV * HR_end * 1e-3 % L min^(-1)
+CP = trapz(P_lv(beat),V_lv(beat)) / 7.5 * 1e-3 * HR/60; %mean(P_sa(beat)) / 7.5 * 1e3 * SV * 1e-6 * HR_end/60 % W 
+CP = CP / 2 %average over 2 beats 
 
 save nom.mat
 
+
 %% Plot
 
-beat = find(tspan >= tspan(end) - HR); 
+vlims = [0 175]; 
+plims = [0 145]; 
 
-figure(1)
+hfig1 = figure(1); 
 clf
-plot(tspan,V_lv,'b',tspan,V_rv,'r')
-xlabel('Time (s)')
-ylabel('Volume (mL)')
-legend('V_{lv}','V_{rv}')
-set(gca,'FontSize',20)
-
-figure(2)
-clf
-plot(tspan,P_lv,'b',tspan,P_rv,'r')
-xlabel('Time (s)')
-ylabel('Pressure (mmHg)')
-legend('P_{lv}','P_{rv}')
-set(gca,'FontSize',20)
-
-figure(3)
-clf
-plot(tspan,P_lv,'b',tspan,P_sa, 'm')
-xlabel('Time (s)')
-ylabel('Pressure (mmHg)')
-legend('P_{lv}','P_{sa}')
-set(gca,'FontSize',20)
-
-figure(4)
-clf
-plot(V_lv(beat), P_lv(beat), 'b')
 hold on 
-plot(V_rv(beat), P_rv(beat), 'r')
+h1 = plot(V_lv(beat), P_lv(beat), 'b','linewidth',2);
+h2 = plot(V_rv(beat), P_rv(beat), 'r','linewidth',2);
 xlabel('Volume (mL)')
 ylabel('Pressure (mmHg)')
-legend('V_{lv}','V_{rv}')
-set(gca,'FontSize',20)
-xlim([0 140])
+legend([h1 h2],'LV','RV')
+set(gca,'FontSize',25)
+xlim(vlims)
 
-figure(5) 
+hfig2 = figure(2);  
 clf
 hold on 
 plot([tspan(1) tspan(end)],(SPbar * 7.5) * ones(2,1),'k:','linewidth',0.5)
 plot([tspan(1) tspan(end)],(DPbar * 7.5) * ones(2,1),'k:','linewidth',0.5)
-h1 = plot(tspan,P_sa, 'm'); 
+h1 = plot(tspan,P_sa, 'm','linewidth',2); 
+xlabel('Time (s)')
+ylabel('Pressure (mmHg)','linewidth',2)
+legend([h1],'P_{sa}')
+set(gca,'FontSize',25)
+ylim([50 140])
+
+hfig3 = figure(3);
+clf 
+hold on
+plot(t_beat,P_lv(beat),'b','linewidth',2)
+%plot(t_beat,P_la(beat),'r','linewidth',2)
+plot(t_beat,P_sa(beat),'m','linewidth',2)
+set(gca,'FontSize',25)
+legend('P_{lv}','P_{sa}','orientation','horizontal')%'P_{la}',
 xlabel('Time (s)')
 ylabel('Pressure (mmHg)')
-legend(h1,'P_{sa}')
-set(gca,'FontSize',20)
-ylim([60 140])
+xlim([t_beat(1) t_beat(end)])
+
+hfig4 = figure(4);
+clf 
+hold on
+plot(t_beat,P_sv(beat),'k','linewidth',2)
+plot(t_beat,P_rv(beat),'b','linewidth',2)
+%plot(t_beat,P_ra(beat),'r','linewidth',2)
+plot(t_beat,P_pa(beat),'c','linewidth',2)
+plot(t_beat,P_pv(beat),'m','linewidth',2)
+set(gca,'FontSize',25)
+legend('P_{sv}','P_{rv}','P_{pa}','P_{pv}','orientation','horizontal')%'P_{ra}',
+xlabel('Time (s)')
+ylabel('Pressure (mmHg)')
+xlim([t_beat(1) t_beat(end)])
+ylim([0 30])
+
+hfig5 = figure(5); 
+clf
+hold on 
+plot(t_beat,V_lv(beat),'b','linewidth',2)
+plot(t_beat,V_rv(beat),'r','linewidth',2)
+set(gca,'FontSize',25)
+legend('V_{lv}','V_{rv}','orientation','horizontal')
+xlabel('Time (s)')
+ylabel('Volume (mmHg)')
+xlim([t_beat(1) t_beat(end)])
+
+hfig6 = figure(6); 
+clf
+hold on 
+plot(t_beat,Q_t_valve(beat),'r','linewidth',2)
+plot(t_beat,Q_a_valve(beat),'b--','linewidth',2)
+plot(t_beat,Q_p_valve(beat),'r--','linewidth',2)
+plot(t_beat,Q_m_valve(beat),'b','linewidth',2)
+set(gca,'FontSize',25)
+legend('Q_{t}','Q_{a}','Q_{p}','Q_{m}')
+xlabel('Time (s)')
+ylabel('Flow (L min^{-1})')
+
+if printon == 1
+    print(hfig1,'-dpng','F1_PVloops.png')
+    print(hfig2,'-dpng','F2_Psa.png')
+    print(hfig3,'-dpng','F3_highP.png')
+    print(hfig4,'-dpng','F4_lowP.png')
+    print(hfig5,'-dpng','F5_ventrV.png')
+    print(hfig6,'-dpng','F6_valveF.png')
+end 
 
 
 
