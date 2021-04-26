@@ -56,7 +56,6 @@ Ca_rest = pars(34); % dimensionless Diastolic resting level of activation
 
 tau_a = pars(39); 
 
-
 %% Variables 
 
 % Axial distance of midwall junction 
