@@ -29,8 +29,6 @@ C_sv = pars(8);
 C_pa = pars(9); 
 C_pv = pars(10); 
 
-Ca_rest = pars(34); 
-
 %% Pressures 
 
 P_sa = k_sa * Pbar; 
@@ -66,15 +64,9 @@ V_rv0 = P_rvm / E_rvm;
 V_pa0 = C_pa * P_pa;  
 V_pv0 = C_pv * P_pv;   
 
-% 16 - 18
-Ca_lv0  = Ca_rest;
-Ca_sep0 = Ca_rest;
-Ca_rv0  = Ca_rest;
-
 init = [xm_lv0; xm_sep0; xm_rv0; ym0;
     Lsc_lv0; Lsc_sep0; Lsc_rv0; 
     V_la0; V_lv0; V_sa0; V_sv0; V_ra0; V_rv0; V_pa0; V_pv0; 
-    Ca_lv0; Ca_sep0; Ca_rv0; 
     ]; 
 
 x0   = init(1:4);  

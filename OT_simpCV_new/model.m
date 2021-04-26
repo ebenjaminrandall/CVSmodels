@@ -37,24 +37,21 @@ Amref_lv  = pars(22);
 Amref_sep = pars(23); 
 Amref_rv  = pars(24); 
 
-% Time-scale (s)
-tauR  = pars(25); 
-tauD  = pars(26); 
-tausc = pars(27); 
-
 % Sarcomere length parameters (m)
-Lsref   = pars(28);
-Lsc0    = pars(29); 
-Lse_iso = pars(30); 
+Lsref   = pars(25);
+Lsc0    = pars(26); 
+Lse_iso = pars(27); 
 
 % Force scaling factors (kPa) 
-k_act = pars(31); 
-k_pas = pars(32); 
+k_act = pars(28); 
+k_pas = pars(29); 
 
-v_max   = pars(33); % m s^(-1) sarcomere length shortening velocity
-Ca_rest = pars(34); % dimensionless Diastolic resting level of activation
+v_max   = pars(30); % m s^(-1) sarcomere length shortening velocity
 
-tau_a = pars(39); 
+tau_a = pars(35); 
+
+k_TS = pars(36); 
+k_TR = pars(37); 
 
 %% Variables 
 
@@ -81,15 +78,9 @@ V_rv = x(13);
 V_pa = x(14); 
 V_pv = x(15); 
 
-% Mechanical activation 
-Ca_lv  = x(16); 
-Ca_sep = x(17);
-Ca_rv  = x(18); 
-
+%% Activation function
 
 T = 60/HR; 
-k_TS = .1; 
-k_TR = .3; 
 TS = k_TS * T; 
 TR = k_TR * T; 
 
@@ -102,7 +93,7 @@ else
     y_v = 0; 
 end 
 
-tc_a = mod(t + .2,T);
+tc_a = mod(t + tau_a,T);
 if tc_a >= 0 && tc_a < TS 
     y_a = 0.5*(1 - cos(pi*tc_a/TS)); 
 elseif tc_a >= TS && tc_a < TR + TS 
@@ -144,13 +135,9 @@ Ls_sep = Lsref * exp(eps_sep);
 Ls_rv  = Lsref * exp(eps_rv); 
 
 % Active stress (kPa)
-% sigma_act_lv  = Ca_lv  * (Lsc_lv  - Lsc0) / 1e-6 * (Ls_lv  - Lsc_lv)  / Lse_iso; 
-% sigma_act_sep = Ca_sep * (Lsc_sep - Lsc0) / 1e-6 * (Ls_sep - Lsc_sep) / Lse_iso;
-% sigma_act_rv  = Ca_rv  * (Lsc_rv  - Lsc0) / 1e-6 * (Ls_rv  - Lsc_rv)  / Lse_iso;
-
-sigma_act_lv  = ((1.65 - .02)*y_v + .02)  * (Lsc_lv  - Lsc0) / 1e-6 * (Ls_lv  - Lsc_lv)  / Lse_iso; 
-sigma_act_sep = ((1.65 - .02)*y_v + .02) * (Lsc_sep - Lsc0) / 1e-6 * (Ls_sep - Lsc_sep) / Lse_iso;
-sigma_act_rv  = ((1.65 - .02)*y_v + .02)  * (Lsc_rv  - Lsc0) / 1e-6 * (Ls_rv  - Lsc_rv)  / Lse_iso;
+sigma_act_lv  = y_v  * (Lsc_lv  - Lsc0) / 1e-6 * (Ls_lv  - Lsc_lv)  / Lse_iso; 
+sigma_act_sep = y_v  * (Lsc_sep - Lsc0) / 1e-6 * (Ls_sep - Lsc_sep) / Lse_iso;
+sigma_act_rv  = y_v  * (Lsc_rv  - Lsc0) / 1e-6 * (Ls_rv  - Lsc_rv)  / Lse_iso;
 
 % Passive stress (kPa)
 sigma_pas_lv  = 36 * max(0,eps_lv - 0.1)^2  + 0.1 * (eps_lv  - 0.1) + 0.0025 * exp(30 * eps_lv); 
@@ -183,53 +170,11 @@ ptrans_rv = 2 * Tx_rv / ym;
 P_lv = -ptrans_lv; 
 P_rv = ptrans_rv; 
 
-% %% Calcium handling 
-% 
-% % Increase of activation with sarcomere length (dimensionless)
-% CaL_lv  = tanh(4 * ((Lsc_lv  - Lsc0) / 1e-6)^2); 
-% CaL_sep = tanh(4 * ((Lsc_sep - Lsc0) / 1e-6)^2); 
-% CaL_rv  = tanh(4 * ((Lsc_rv  - Lsc0) / 1e-6)^2); 
-% 
-% % Rise of mechanical activation 
-% T     = 60 / HR; 
-% tc    = mod(t, T); 
-% x     = min(8, max(0, tc / tauR)); 
-% Frise = 0.02 * x^3 * (8 - x)^2 * exp(-x);
-% 
-% % decrease of activation duration with decrease of sarcomere length (s)
-% T_lv  = tausc * (0.29 + 0.3 * (Lsc_lv  / 1e-6)); 
-% T_sep = tausc * (0.29 + 0.3 * (Lsc_sep / 1e-6));
-% T_rv  = tausc * (0.29 + 0.3 * (Lsc_rv  / 1e-6));
-% 
-% tc = mod(t,T);
-% 
-% k_TS = .1; 
-% k_TR = .3; 
-% TS = k_TS * T; 
-% TR = k_TR * T; 
-% 
-% if tc >= 0 && tc < TS 
-%     y_a = 0.5*(1 - cos(pi*tc/TS)); 
-% elseif tc >= TS && tc < TR + TS 
-%     y_a = 0.5*(1 + cos(pi*(tc - TS)/TR)); 
-% else
-%     y_a = 0; 
-% end 
-
-
 %% Lumped circulatory model 
 
-% % Rise of mechanical activation 
-% tc_a    = mod(t + tau_a, T); 
-% x_a     = min(8, max(0, tc_a / tauR)); 
-% Y_a = 0.02 * x_a^3 * (8 - x_a)^2 * exp(-x_a);
-
-%E_la = (E_laM - E_lam) * Y_a + E_lam; 
-%E_ra = (E_raM - E_ram) * Y_a + E_ram; 
-
+% Elastance
 E_la = (E_laM - E_lam) * y_a + E_lam; 
 E_ra = (E_raM - E_ram) * y_a + E_ram; 
-
 
 % Pressure (kPa)
 P_la = V_la * E_la; 
@@ -272,15 +217,9 @@ dV_rv = Q_t_valve - Q_p_valve;
 dV_pa = Q_p_valve - Q_pa; 
 dV_pv = Q_pa      - Q_pv; 
 
-% 15 - 17
-dCa_lv  = 0; %1/tauR * CaL_lv  * Frise + 1/tauD * (Ca_rest - Ca_lv)  / (1 + exp((T_lv  - tc) / tauD)); 
-dCa_sep = 0; %1/tauR * CaL_sep * Frise + 1/tauD * (Ca_rest - Ca_sep) / (1 + exp((T_sep - tc) / tauD)); 
-dCa_rv  = 0; %1/tauR * CaL_rv  * Frise + 1/tauD * (Ca_rest - Ca_rv)  / (1 + exp((T_rv  - tc) / tauD)); 
-
 dxdt = [dxm_lv; dxm_sep; dxm_rv; dym;
     dLsc_lv; dLsc_sep; dLsc_rv; 
     dV_la; dV_lv; dV_sa; dV_sv; dV_ra; dV_rv; dV_pa; dV_pv; 
-    dCa_lv; dCa_sep; dCa_rv; 
     ]; 
 
 outputs = [P_la; P_lv; P_sa; P_sv; P_ra; P_rv; P_pa; P_pv; 

@@ -15,13 +15,16 @@ Amref_sep = pars(23);
 Amref_rv  = pars(24); 
 
 % Sarcomere length parameters (µm)
-Lsref   = pars(28);
-Lsc0    = pars(29); 
-Lse_iso = pars(30); 
+Lsref   = pars(25);
+Lsc0    = pars(26); 
+Lse_iso = pars(27); 
 
 % Force scaling factors (mmHg)
-k_act = pars(31); 
-k_pas = pars(32);
+k_act = pars(28); 
+k_pas = pars(29);
+
+k_TS = pars(36); 
+k_TR = pars(37); 
 
 %% Variables 
 
@@ -39,14 +42,9 @@ Lsc_rv  = init(7);
 V_lv = init(9); 
 V_rv = init(13);
 
-% Mechanical activation 
-Ca_lv  = init(16); 
-Ca_sep = init(17);
-Ca_rv  = init(18); 
+%% Activation function 
 
 T = 60/HR; 
-k_TS = .1; 
-k_TR = .3; 
 TS = k_TS * T; 
 TR = k_TR * T; 
 
@@ -59,16 +57,6 @@ elseif tc_v >= TS && tc_v < TR + TS
 else
     y_v = 0; 
 end 
-
-tc_a = mod(t + .2,T);
-if tc_a >= 0 && tc_a < TS 
-    y_a = 0.5*(1 - cos(pi*tc_a/TS)); 
-elseif tc_a >= TS && tc_a < TR + TS 
-    y_a = 0.5*(1 + cos(pi*(tc_a - TS)/TR)); 
-else
-    y_a = 0; 
-end 
-
 
 %% Heart and sarcomere model 
 
@@ -103,13 +91,9 @@ Ls_sep = Lsref * exp(eps_sep);
 Ls_rv  = Lsref * exp(eps_rv); 
 
 % Active stress (kPa)
-% sigma_act_lv  = Ca_lv  * (Lsc_lv  - Lsc0) / 1e-6 * (Ls_lv  - Lsc_lv)  / Lse_iso;  
-% sigma_act_sep = Ca_sep * (Lsc_sep - Lsc0) / 1e-6 * (Ls_sep - Lsc_sep) / Lse_iso;
-% sigma_act_rv  = Ca_rv  * (Lsc_rv  - Lsc0) / 1e-6 * (Ls_rv  - Lsc_rv)  / Lse_iso; 
-
-sigma_act_lv  = ((1.65 - .02)*y_v + .02)  * (Lsc_lv  - Lsc0) / 1e-6 * (Ls_lv  - Lsc_lv)  / Lse_iso; 
-sigma_act_sep = ((1.65 - .02)*y_v + .02) * (Lsc_sep - Lsc0) / 1e-6 * (Ls_sep - Lsc_sep) / Lse_iso;
-sigma_act_rv  = ((1.65 - .02)*y_v + .02)  * (Lsc_rv  - Lsc0) / 1e-6 * (Ls_rv  - Lsc_rv)  / Lse_iso;
+sigma_act_lv  = y_v  * (Lsc_lv  - Lsc0) / 1e-6 * (Ls_lv  - Lsc_lv)  / Lse_iso; 
+sigma_act_sep = y_v * (Lsc_sep - Lsc0) / 1e-6 * (Ls_sep - Lsc_sep) / Lse_iso;
+sigma_act_rv  = y_v  * (Lsc_rv  - Lsc0) / 1e-6 * (Ls_rv  - Lsc_rv)  / Lse_iso;
 
 % Passive stress (kPa)
 sigma_pas_lv  = 36 * max(0,eps_lv  - 0.1)^2 + 0.1 * (eps_lv  - 0.1) + 0.0025 * exp(30 * eps_lv); 

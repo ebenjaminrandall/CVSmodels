@@ -161,18 +161,12 @@ Amref_lv  = Am_LV_and_SEP * 2/3;
 Amref_sep = Am_LV_and_SEP * 1/3; 
 Amref_rv  = Am_RV; 
 
-% Time scale (convet from ms to s) 
-tauR  = 48 * 1e-3; 
-tauD  = 32 * 1e-3; 
-tausc = 425 * 1e-3; 
-
 % Sarcomere length parameters (convert from µm to m)
 Lsref   = 2 * 1e-6; 
 Lsc0    = 1.51 * 1e-6; 
 Lse_iso = 0.04 * 1e-6; 
 
 v_max   = 7 * 1e-6;    % convert from um s^(-1) to m s^(-1) % sarcomere length shortening velocity
-Ca_rest = 0.02;        % dimensionless %diastolic resting level of activation
 
 %% Calculate force parameters 
 
@@ -196,6 +190,9 @@ k_act = 120;
 
 tau_a = 0.2; 
 
+k_TS = 0.1; 
+k_TR = 0.3; 
+
 %% Outputs
 
 adjpars = [E_laM; E_lam; E_lvm; E_raM; E_ram; E_rvm; 
@@ -204,13 +201,12 @@ adjpars = [E_laM; E_lam; E_lvm; E_raM; E_ram; E_rvm;
     R_m_valve; R_a_valve; R_t_valve; R_p_valve;  
     Vw_lv; Vw_sep; Vw_rv; 
     Amref_lv; Amref_sep; Amref_rv; 
-    tauR; tauD; tausc; 
     Lsref; Lsc0; Lse_iso; 
     k_act; k_pas; 
     v_max; 
-    Ca_rest; 
     V_sau; V_svu; V_pau; V_pvu; 
     tau_a; 
+    k_TS; k_TR; 
     ]; 
 
 fixpars = [k_lam; k_lvm; k_sa; k_sv; k_ram; k_rvm; k_pa; k_pv; 
