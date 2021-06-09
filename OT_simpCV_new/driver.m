@@ -24,7 +24,7 @@ Vtot = 4500 * 1e-6;
 CO = Vtot / 60;     % m^3 s^(-1)
 
 % Individual wall volumes % convert from mL to m^3
-Vw_LV_and_SEP = 150 * 1e-6; %115 * 1e-6;
+Vw_LV_and_SEP = 165 * 1e-6; %115 * 1e-6;
 Vw_RV         = 30 * 1e-6;  %30  * 1e-6;  
 
 % Individual reference surface area % convert from cm^2 to m^2

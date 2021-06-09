@@ -37,11 +37,11 @@ V_pv0 = d_pv*Vtot;
 
 %% Unstressed Volumes (m^3)
 
-vaperc = .72; %Vu for arteries is ~72% of Vtot - Beneken
+vaperc = .7; %Vu for arteries is ~72% of Vtot - Beneken
 V_sau = V_sa0*vaperc;
 V_pau = V_pa0*vaperc; 
 
-vvperc = .92; %Vu for veins is ~92% of Vtot - Beneken
+vvperc = .9; %Vu for veins is ~92% of Vtot - Beneken
 V_svu = V_sv0*vvperc; 
 V_pvu = V_pv0*vvperc; 
 
@@ -145,9 +145,9 @@ R_pa = (P_pabar - P_pvbar)/CO;
 R_pv = (P_pvbar - P_lam)/CO;
 
 R_m_valve = 1e-3 / 7.5e-6; %1e-4 / 7.5 / 1e-6;
-R_a_valve = 1e-4 / 7.5e-6; 
+R_a_valve = 5e-3 / 7.5e-6; 
 R_t_valve = 1e-3 / 7.5e-6; 
-R_p_valve = 1e-4 / 7.5e-6; 
+R_p_valve = 1e-3 / 7.5e-6; 
 
 %% Heart model 
 
@@ -179,7 +179,17 @@ Cm_lv_d  = - 2 * xm_lv_d  / (xm_lv_d^2  + ym_d^2);
 z_lv_d   = 3 * Cm_lv_d  * Vw_lv  / (2 * Am_lv_d); 
 eps_lv_d = 0.5 * log( Am_lv_d  / Amref_lv  ) - (1/12) * z_lv_d^2  - 0.019 * z_lv_d^4; 
 
-sigma_pas_lv_d = 36 * max(0,eps_lv_d - 0.1)^2  + 0.1 * (eps_lv_d  - 0.1) + 0.0025 * exp(30 * eps_lv_d); 
+Ls_lv_d  = Lsref * exp(eps_lv_d); 
+
+%sigma_pas_lv_d = 36 * max(0,eps_lv_d - 0.1)^2  + 0.1 * (eps_lv_d  - 0.1) + 0.0025 * exp(30 * eps_lv_d); 
+
+PConcollagen = 19; 
+PExpcollagen = 2.93; 
+Ls_0 = 1.8e-6; %1.94 * 1e-6; 
+sigma_coll_lv  =  ((Ls_lv_d - Ls_0)/1e-6)^PExpcollagen; 
+sigma_pas_lv_d  = (Ls_lv_d  - Ls_0)/1e-6 + PConcollagen * sigma_coll_lv; 
+
+
 Gamma_lv_d     = - (2 / 3) * z_lv_d * (1 + (1 / 3) * z_lv_d^2 + (1 / 5) * z_lv_d^4);
 
 % Force scaling factors (kPa)

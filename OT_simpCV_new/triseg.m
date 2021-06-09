@@ -14,7 +14,7 @@ Amref_lv  = pars(22);
 Amref_sep = pars(23); 
 Amref_rv  = pars(24); 
 
-% Sarcomere length parameters (Âµm)
+% Sarcomere length parameters (µm)
 Lsref   = pars(25);
 Lsc0    = pars(26); 
 Lse_iso = pars(27); 
@@ -91,14 +91,28 @@ Ls_sep = Lsref * exp(eps_sep);
 Ls_rv  = Lsref * exp(eps_rv); 
 
 % Active stress (kPa)
-sigma_act_lv  = y_v  * (Lsc_lv  - Lsc0) / 1e-6 * (Ls_lv  - Lsc_lv)  / Lse_iso; 
+sigma_act_lv  = y_v * (Lsc_lv  - Lsc0) / 1e-6 * (Ls_lv  - Lsc_lv)  / Lse_iso; 
 sigma_act_sep = y_v * (Lsc_sep - Lsc0) / 1e-6 * (Ls_sep - Lsc_sep) / Lse_iso;
-sigma_act_rv  = y_v  * (Lsc_rv  - Lsc0) / 1e-6 * (Ls_rv  - Lsc_rv)  / Lse_iso;
+sigma_act_rv  = y_v * (Lsc_rv  - Lsc0) / 1e-6 * (Ls_rv  - Lsc_rv)  / Lse_iso;
 
 % Passive stress (kPa)
-sigma_pas_lv  = 36 * max(0,eps_lv  - 0.1)^2 + 0.1 * (eps_lv  - 0.1) + 0.0025 * exp(30 * eps_lv); 
-sigma_pas_sep = 36 * max(0,eps_sep - 0.1)^2 + 0.1 * (eps_sep - 0.1) + 0.0025 * exp(30 * eps_sep); 
-sigma_pas_rv  = 36 * max(0,eps_rv  - 0.1)^2 + 0.1 * (eps_rv  - 0.1) + 0.0025 * exp(30 * eps_rv);  
+% sigma_pas_lv  = 36 * max(0,eps_lv  - 0.1)^2 + 0.1 * (eps_lv  - 0.1) + 0.0025 * exp(30 * eps_lv); 
+% sigma_pas_sep = 36 * max(0,eps_sep - 0.1)^2 + 0.1 * (eps_sep - 0.1) + 0.0025 * exp(30 * eps_sep); 
+% sigma_pas_rv  = 36 * max(0,eps_rv  - 0.1)^2 + 0.1 * (eps_rv  - 0.1) + 0.0025 * exp(30 * eps_rv);  
+
+PConcollagen = 19; 
+PExpcollagen = 2.93; 
+Ls_0 = 1.8e-6; %1.94 * 1e-6; 
+
+sigma_coll_lv  =  ((Ls_lv - Ls_0)/1e-6)^PExpcollagen; 
+sigma_coll_sep =  ((Ls_sep - Ls_0)/1e-6)^PExpcollagen; 
+sigma_coll_rv  =  ((Ls_rv - Ls_0)/1e-6)^PExpcollagen; 
+
+
+sigma_pas_lv  = (Ls_lv  - Ls_0)/1e-6 + PConcollagen * sigma_coll_lv; 
+sigma_pas_sep = (Ls_sep - Ls_0)/1e-6 + PConcollagen * sigma_coll_sep; 
+sigma_pas_rv  = (Ls_rv  - Ls_0)/1e-6 + PConcollagen * sigma_coll_rv; 
+
 
 % Total stress (kPa)
 sigma_lv  = k_act * sigma_act_lv  + k_pas * sigma_pas_lv; 
