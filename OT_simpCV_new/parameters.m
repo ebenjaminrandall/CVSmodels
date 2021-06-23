@@ -144,6 +144,12 @@ R_sv = (P_svbar - P_ram)/CO;
 R_pa = (P_pabar - P_pvbar)/CO; 
 R_pv = (P_pvbar - P_lam)/CO;
 
+% Parameter values in Wood units 
+R_sa * 7.5e-6 * 1000/60
+R_sv * 7.5e-6 * 1000/60
+R_pa * 7.5e-6 * 1000/60
+R_pv * 7.5e-6 * 1000/60
+
 R_m_valve = 1e-3 / 7.5e-6; %1e-4 / 7.5 / 1e-6;
 R_a_valve = 5e-3 / 7.5e-6; 
 R_t_valve = 1e-3 / 7.5e-6; 

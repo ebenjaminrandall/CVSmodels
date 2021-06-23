@@ -4,6 +4,10 @@ clear all
 
 printon = 0; 
 
+% Evaluation time 
+dt = 0.001; 
+tspan = 0:dt:30;
+
 %% Load pseudodata
 
 % Mean values 
@@ -30,10 +34,6 @@ Vw_RV         = 30 * 1e-6;  %30  * 1e-6;
 % Individual reference surface area % convert from cm^2 to m^2
 Am_LV_and_SEP = 125  * 1e-4; 
 Am_RV         = 100 * 1e-4; 
-
-% Evaluation time 
-dt = 0.001; 
-tspan = 0:dt:20;
 
 % Deformation of heart wall (convert cm to m)
 xm_lv0  = 4.5 * 1e-2; 
@@ -103,8 +103,12 @@ Q_pv      = outputs.flows.Q_pv;
 
 b = mod(tspan,round(60/HR,3)); 
 beats = find(round(b,3) ==  0); 
-beat = beats(end-3):beats(end-1); 
 
+try 
+    beat = beats(end-3):beats(end-1); 
+catch 
+    beat = 1:length(b);
+end 
 t_beat = tspan(beat) - tspan(beat(1)); 
 
 SV = max(V_lv(beat)) - min(V_lv(beat)) % mL
@@ -112,6 +116,10 @@ EF = SV / max(V_lv(beat)) % dimensionless
 CO = trapz(t_beat/60,Q_a_valve(beat))/(t_beat(end)/60 - t_beat(1)/60) %SV * HR_end * 1e-3 % L min^(-1)
 CP = trapz(P_lv(beat),V_lv(beat)) / 7.5 * 1e-3 * HR/60; %mean(P_sa(beat)) / 7.5 * 1e3 * SV * 1e-6 * HR_end/60 % W 
 CP = CP / 2 %average over 2 beats 
+
+
+P_pam = trapz(t_beat,P_pa(beat))/(t_beat(end) - t_beat(1)) 
+
 
 save nom.mat
 
@@ -169,7 +177,7 @@ legend('P_{sv}','P_{rv}','P_{ra}','P_{pa}','P_{pv}','orientation','horizontal')%
 xlabel('Time (s)')
 ylabel('Pressure (mmHg)')
 xlim([t_beat(1) t_beat(end)])
-ylim([0 30])
+%ylim([0 30])
 
 hfig5 = figure(5); 
 clf
