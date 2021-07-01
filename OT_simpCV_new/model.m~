@@ -226,6 +226,8 @@ dV_rv = Q_t_valve - Q_p_valve;
 dV_pa = Q_p_valve - Q_pa; 
 dV_pv = Q_pa      - Q_pv; 
 
+dQ_a_valve = 1/L_a_
+
 dxdt = [dxm_lv; dxm_sep; dxm_rv; dym;
     dLsc_lv; dLsc_sep; dLsc_rv; 
     dV_la; dV_lv; dV_sa; dV_sv; dV_ra; dV_rv; dV_pa; dV_pv; 

@@ -35,9 +35,9 @@ xm_rv0  = data.deformation.xm_rv0;
 ym0     = data.deformation.ym0; 
 
 % 5 - 7 (convert um to m)
-Lsc_lv0  = 1.6 * 1e-6;
-Lsc_sep0 = 1.6 * 1e-6;
-Lsc_rv0  = 1.6 * 1e-6;
+Lsc_lv0  = 1.8 * 1e-6;
+Lsc_sep0 = 1.8 * 1e-6;
+Lsc_rv0  = 1.8 * 1e-6;
 
 % 8 - 15 (m^3)
 V_la0 = P_lam / E_lam; 
@@ -49,14 +49,16 @@ V_rv0 = P_rvm / E_rvm;
 V_pa0 = C_pa * P_pam;  
 V_pv0 = C_pv * P_pvm; 
 
+Q_a_valve = 0; 
+Q_p_valve = 0; 
+
 init = [xm_lv0; xm_sep0; xm_rv0; ym0;
     Lsc_lv0; Lsc_sep0; Lsc_rv0; 
     V_la0; V_lv0; V_sa0; V_sv0; V_ra0; V_rv0; V_pa0; V_pv0; 
     ]; 
 
 x0   = log(init(1:7)); 
-opts = optimoptions('fsolve','Display','iter',...
-    'MaxFunctionEvaluations',1e3); 
+opts = optimoptions('fsolve','Display','iter'); 
 xopt = fsolve(@(x) triseg(x,pars,data,init),x0,opts); 
 init(1:7) = exp(xopt(1:7)); 
 

@@ -1,7 +1,5 @@
 function f = triseg(x,pars,data,init)
 
-x = exp(x); 
-
 HR = data.HR; 
 
 %% Parameters 
@@ -40,9 +38,9 @@ xm_rv  = x(3);
 ym     = x(4); 
 
 % Contractile element length 
-Lsc_lv  = x(5); 
-Lsc_sep = x(6); 
-Lsc_rv  = x(7); 
+Lsc_lv  = init(5); 
+Lsc_sep = init(6); 
+Lsc_rv  = init(7); 
 
 % Volumes 
 V_lv = init(9); 
@@ -103,8 +101,8 @@ sigma_act_rv  = y_v * (Lsc_rv  - Lsc0) / 1e-6 * (Ls_rv  - Lsc_rv)  / Lse_iso;
 
 % Stress due to collagen (kPa) 
 sigma_coll_lv  =  alpha_c * ((Ls_lv - Lsc0)/1e-6)^beta_c; 
-sigma_coll_sep =  alpha_c * ((Ls_sep - Lsc0)/1e-6)^beta_c; 
-sigma_coll_rv  =  alpha_c * ((Ls_rv - Lsc0)/1e-6)^beta_c; 
+sigma_coll_sep =  alpha_c * ((Ls_sep - Lsc0)^beta_c; 
+sigma_coll_rv  =  alpha_c * ((Ls_rv - Lsc0)^beta_c; 
 
 % Passive stress (kPa)
 sigma_pas_lv  = (Ls_lv  - Lsc0)/1e-6 + sigma_coll_lv; 
@@ -136,10 +134,6 @@ f2 = Tx_lv + Tx_sep + Tx_rv;
 f3 = V_rv + 0.5 * Vw_rv + 0.5 * Vw_sep + Vm_sep - Vm_rv;
 f4 = Ty_lv + Ty_sep + Ty_rv; 
 
-f5 = (Ls_lv  - Lsc_lv)  /Lse_iso - 1;
-f6 = (Ls_sep - Lsc_sep) /Lse_iso - 1;
-f7 = (Ls_rv  - Lsc_rv)  /Lse_iso - 1;
-
-f = [f1; f2; f3; f4; f5; f6; f7]; 
+f = [f1; f2; f3; f4]; 
 end 
 

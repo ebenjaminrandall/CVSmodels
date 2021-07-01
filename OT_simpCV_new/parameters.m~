@@ -105,15 +105,15 @@ C_pv = V_pvs/P_pvM;
 
 %% Resistances (mmHg s mL^(-1) converted to kPa s m^(-3))
 
-R_sa = (P_sabar - P_svbar)/CO;
-R_sv = (P_svbar - P_ram)/CO;
+R_sa = (P_saM - P_svm)/CO;
+R_sv = (P_svM - P_ram)/CO;
 R_pa = (P_pabar - P_pvbar)/CO; 
 R_pv = (P_pvbar - P_lam)/CO;
 
 % % Parameter values in Wood units 
 % R_sa * 7.5e-6 * 1000/60
 % R_sv * 7.5e-6 * 1000/60
-%R_pa * 7.5e-6 * 1000/60
+R_pa * 7.5e-6 * 1000/60
 % R_pv * 7.5e-6 * 1000/60
 
 R_m_valve = 1e-3 / 7.5e-6; %1e-4 / 7.5 / 1e-6;
@@ -135,7 +135,7 @@ Amref_rv  = Am_RV;
 
 % Sarcomere length parameters (convert from µm to m)
 Lsref   = 2 * 1e-6; 
-Lsc0    = 1.51 * 1e-6; 
+Lsc0    = .7*1.51 * 1e-6; 
 Lse_iso = 0.04 * 1e-6; 
 
 v_max   = 7 * 1e-6;    % convert from um s^(-1) to m s^(-1) % sarcomere length shortening velocity

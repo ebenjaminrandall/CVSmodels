@@ -1,7 +1,6 @@
 function [outputs,rout,J] = model_sol(adjpars,data)
 
-tspan = data.tspan;  
-DPbar = data.DPbar; 
+tspan = data.tspan;   
 
 ODE_TOL = data.gpars.ODE_TOL;
 
@@ -122,7 +121,7 @@ outputs.stresses      = stresses;
 outputs.lengths       = lengths; 
 outputs.flows         = flows; 
 
-rout = (min(pressures.P_sa) - DPbar) / DPbar; 
+rout = 1; 
 J    = rout' * rout; 
 
 
